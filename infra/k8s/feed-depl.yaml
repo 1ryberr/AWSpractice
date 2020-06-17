@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feed-depl
+  labels:
+    app: feed
+spec:
+  replicas: 1    
+  selector:
+   matchLabels:
+     app: feed
+  template:
+     metadata:
+       labels:
+         app: feed
+     spec:
+       containers:
+         - name: feed
+           image: 1ryber/udacity-restapi-feed
+           resources:
+             requests:
+               cpu: 100m
+               memory: 100Mi
+             limits:
+               cpu: 200m
+               memory: 200Mi 
+           env:
+               - name: URL
+                 valueFrom:
+                   configMapKeyRef:
+                     name: env-config
+                     key: URL
+               - name: AWS_BUCKET
+                 valueFrom:
+                    configMapKeyRef:
+                      name: env-config
+                      key: AWS_BUCKET
+               - name: AWS_REGION
+                 valueFrom:
+                    configMapKeyRef:
+                      name: env-config
+                      key: AWS_REGION
+               - name: JWT_SECRET
+                 valueFrom:
+                    configMapKeyRef:
+                      name: env-config
+                      key: JWT_SECRET
+               - name: POSTGRES_DB
+                 valueFrom:
+                    configMapKeyRef:
+                      name: env-config
+                      key: POSTGRES_DB
+               - name: POSTGRES_HOST
+                 valueFrom:
+                    configMapKeyRef:
+                      name: env-config
+                      key: POSTGRES_HOST
+               - name: POSTGRES_PASSWORD
+                 valueFrom:
+                    secretKeyRef:
+                      name: env-secret
+                      key: POSTGRES_PASSWORD
+               - name: POSTGRES_USERNAME
+                 valueFrom:
+                    secretKeyRef:
+                      name: env-secret
+                      key: POSTGRES_USERNAME
+               - name: AWS_PROFILE
+                 valueFrom:
+                   configMapKeyRef:
+                     name: env-config
+                     key: AWS_PROFILE
+               - name: SECRET_USERNAME
+                 valueFrom:
+                   secretKeyRef:
+                     name: aws-secret
+                     key: aws_access_key_id
+               - name: SECRET_PASSWORD
+                 valueFrom:
+                   secretKeyRef:
+                     name: aws-secret
+                     key: aws_secret_access_key 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feed-svc
+spec:
+  selector:
+    app: feed
+  ports:
+    - name: "8080"
+      protocol: TCP
+      port: 8080
+      targetPort: 8080 

@@ -1,0 +1,45 @@
+apiVersion: skaffold/v2beta2
+kind: Config
+deploy:
+    kubectl:
+      manifests:
+        - ./infra/k8s/*.yaml
+build:
+  local:
+    push: false
+  artifacts:
+    - image: 1ryber/udacity-restapi-feed
+      context: udacity-restapi-feed
+      docker:
+        dockerfile: Dockerfile
+      sync: 
+        manual:
+          - src: 'src/**/*.ts' 
+            dest: .
+
+    - image: 1ryber/udacity-restapi-user
+      context: udacity-restapi-user
+      docker:
+        dockerfile: Dockerfile
+      sync: 
+        manual:
+          - src: 'src/**/*.ts' 
+            dest: .
+
+    - image: 1ryber/udacity-frontend
+      context: udacity-frontend
+      docker:
+        dockerfile: Dockerfile
+      sync: 
+        manual:
+          - src: 'src/*' 
+            dest: .
+
+    - image: 1ryber/reverseproxy
+      context: docker
+      docker:
+        dockerfile: Dockerfile
+      sync: 
+        manual:
+          - src: 'nginx.conf' 
+            dest: .
