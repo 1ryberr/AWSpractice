@@ -20,7 +20,7 @@
     "@types/dotenv": "^8.2.0",
     "@types/jsonwebtoken": "^8.3.9",
     "aws-sdk": "^2.664.0",
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "email-validator": "^2.0.4",
